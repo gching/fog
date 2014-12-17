@@ -139,7 +139,7 @@ module Fog
 
         def signed_url(params, expires)
           #convert expires from a point in time to a delta to now
-          now = Fog::Time.now          
+          now = Fog::Time.now
 
           expires = expires.to_i - now.to_i
           params[:headers] ||= {}
@@ -227,7 +227,7 @@ module Fog
               elsif scheme == 'https' && bucket_name =~ /\./
                 Fog::Logger.warning("fog: the specified s3 bucket name(#{bucket_name}) contains a '.' so is not accessible over https as a virtual hosted bucket, which will negatively impact performance.  For details see: http://docs.amazonwebservices.com/AmazonS3/latest/dev/BucketRestrictions.html")
                 path_style = true
-              end  
+              end
             end
 
             if path_style
@@ -520,7 +520,7 @@ module Fog
             end
             signature_components = @signer.signature_components(params, date, params[:headers]['x-amz-content-sha256'])
             params[:headers]['Authorization'] = @signer.components_to_header(signature_components)
-            
+
             if params[:body].respond_to?(:read)
               body = params.delete :body
               params[:request_block] = S3Streamer.new(body, signature_components['X-Amz-Signature'], @signer, date)
@@ -541,6 +541,7 @@ module Fog
         def _request(scheme, host, port, params, original_params, &block)
           connection(scheme, host, port).request(params, &block)
         rescue Excon::Errors::MovedPermanently, Excon::Errors::TemporaryRedirect => error
+          puts error.response.body
           headers = (error.response.is_a?(Hash) ? error.response[:headers] : error.response.headers)
           new_params = {}
           if headers.has_key?('Location')
@@ -580,7 +581,7 @@ module Fog
             if body.respond_to?(:binmode)
               body.binmode
             end
-            
+
             if body.respond_to?(:pos=)
               body.pos = 0
             end
