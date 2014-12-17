@@ -540,8 +540,9 @@ module Fog
 
         def _request(scheme, host, port, params, original_params, &block)
           connection(scheme, host, port).request(params, &block)
+          puts "Before rescue"
         rescue Excon::Errors::MovedPermanently, Excon::Errors::TemporaryRedirect => error
-          puts "hi"
+          puts "I AM HERE RAWR"
           puts error.response.body
           headers = (error.response.is_a?(Hash) ? error.response[:headers] : error.response.headers)
           new_params = {}
