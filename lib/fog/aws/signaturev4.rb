@@ -30,7 +30,7 @@ module Fog
       end
 
       def components_to_header components
-        "#{components['X-Amz-Algorithm']} Credential=#{components['X-Amz-Credential']}, SignedHeaders=#{components['X-Amz-SignedHeaders']}, Signature=#{components['X-Amz-Signature']}" 
+        "#{components['X-Amz-Algorithm']} Credential=#{components['X-Amz-Credential']}, SignedHeaders=#{components['X-Amz-SignedHeaders']}, Signature=#{components['X-Amz-Signature']}"
       end
 
       def signature_components(params, date, body_sha)
@@ -65,6 +65,7 @@ DATA
 
       def derived_hmac(date)
         kDate = @hmac.sign(date.utc.strftime('%Y%m%d'))
+        puts "In here"
         kRegion = Fog::HMAC.new('sha256', kDate).sign(@region)
         kService = Fog::HMAC.new('sha256', kRegion).sign(@service)
         kSigning = Fog::HMAC.new('sha256', kService).sign('aws4_request')
